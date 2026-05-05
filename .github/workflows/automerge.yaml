@@ -1,0 +1,17 @@
+name: Automerge
+
+on:
+  pull_request:
+    types: [opened, edited, labeled, synchronize, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+  check_suite:
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  automerge:
+    uses: nolte/gh-plumbing/.github/workflows/reusable-automerge.yaml@v1.1.15

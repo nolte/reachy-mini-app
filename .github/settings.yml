@@ -1,0 +1,13 @@
+_extends: nolte/gh-plumbing:.github/commons-settings.yml
+
+repository:
+  name: reachy-mini-app
+  description: Reachy Mini behavior package built on the Pollen Robotics / Hugging Face reachy_mini SDK.
+  homepage: https://github.com/nolte/reachy-mini-app
+  topics:
+    - reachy-mini
+    - robotics
+    - pollen-robotics
+    - huggingface
+    - python
+    - behavior
