@@ -1,0 +1,5 @@
+# Runtime dependencies for reachy-mini-app.
+#
+# The reachy-mini SDK is the primary runtime dependency once it is published
+# on PyPI / Hugging Face Hub. Add it here when the upstream release cadence
+# is settled. Upstream tracking: https://github.com/pollen-robotics/reachy-mini

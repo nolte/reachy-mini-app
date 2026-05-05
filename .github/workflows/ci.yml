@@ -22,7 +22,7 @@ jobs:
         with:
           version: '3.x'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-      - run: pip install -e ".[dev]"
+      - run: pip install -e . -r requirements-dev.txt
       - run: task lint
 
   test:
@@ -37,7 +37,7 @@ jobs:
         with:
           version: '3.x'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-      - run: pip install -e ".[dev]"
+      - run: pip install -e . -r requirements-dev.txt
       - run: task test
 
   docs:
