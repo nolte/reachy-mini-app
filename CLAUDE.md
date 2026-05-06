@@ -32,6 +32,8 @@ page) is owned by the upstream CLI — never hand-edit those structural pieces.
 | New app skeleton | [`claude-reachy-mini:app-scaffold`](https://github.com/nolte/claude-reachy-mini/blob/develop/skills/app-scaffold/SKILL.md) |
 | SDK idioms (`ReachyMini`, `goto_target`, `play_move`, `Move`, `mini.imu`, `mini.media`) | [`claude-reachy-mini:reachy-mini-sdk`](https://github.com/nolte/claude-reachy-mini/blob/develop/skills/reachy-mini-sdk/SKILL.md) |
 | Dance choreography artifact | [`claude-reachy-mini:dance-choreography`](https://github.com/nolte/claude-reachy-mini/blob/develop/skills/dance-choreography/SKILL.md) |
+| Deploy app to a real Reachy Mini (sync + install + verify) | [`claude-reachy-mini:reachy-mini-deploy`](https://github.com/nolte/claude-reachy-mini/blob/develop/agents/reachy-mini-deploy.md) |
+| Start an installed app on a real Reachy Mini | [`claude-reachy-mini:reachy-mini-start`](https://github.com/nolte/claude-reachy-mini/blob/develop/skills/reachy-mini-start/SKILL.md) |
 | Live test on real Reachy Mini | [`claude-reachy-mini:reachy-mini-on-device`](https://github.com/nolte/claude-reachy-mini/blob/develop/agents/reachy-mini-on-device.md) |
 | Home Assistant integration | [`claude-reachy-mini:home-assistant-bridge`](https://github.com/nolte/claude-reachy-mini/blob/develop/skills/home-assistant-bridge/SKILL.md) |
 
