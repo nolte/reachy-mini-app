@@ -12,9 +12,16 @@ page) is owned by the upstream CLI — never hand-edit those structural pieces.
 
 - `reachy_mini_app/main.py` — `ReachyMiniApp` subclass; entry point in the
   `reachy_mini_apps` group. Behavior logic lives inside `run(self, reachy_mini, stop_event)`.
-- `reachy_mini_app/static/` — optional web UI for the FastAPI settings app
-  exposed at `custom_app_url`.
-- `index.html` + `style.css` — Hugging Face Space landing page.
+- `reachy_mini_app/static/` — **runtime** web UI for the FastAPI settings app
+  exposed at `custom_app_url` while the app runs on the device. Served by
+  FastAPI as `/static/*`. Optional: drop the folder if the app sets
+  `custom_app_url = None`.
+- `index.html` + `style.css` (repo root) — **discovery-time** Hugging Face
+  Space landing page, rendered by HF because the README frontmatter declares
+  `sdk: static`. Pollen requires these at the repo root; their presence is
+  enforced by `reachy-mini-app-assistant check`. **They are not duplicates of
+  `static/`** — different audience (HF visitors vs. on-device operator),
+  different lifecycle, different host.
 - `tests/` — pytest; smoke test runs against `ReachyMini(spawn_daemon=True, use_sim=True)`.
 - `spec/` — local specifications and choreography artifacts.
 
