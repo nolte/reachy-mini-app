@@ -1,43 +1,46 @@
 # Claude Code conventions for reachy-mini-app
 
-This repository is a Reachy Mini behavior package built on the Pollen Robotics /
-Hugging Face [`reachy_mini`](https://github.com/pollen-robotics/reachy-mini) SDK.
+This is a Reachy Mini app scaffolded via Pollen Robotics' official
+`reachy-mini-app-assistant create` CLI, wrapped by the
+[`claude-reachy-mini`](https://github.com/nolte/claude-reachy-mini) plugin's
+`app-scaffold` skill.
+
+The app skeleton (entry point, manifest, package layout, HF Space landing
+page) is owned by the upstream CLI — never hand-edit those structural pieces.
 
 ## Architecture
 
-- `src/reachy_mini_app/` — primary source: behavior implementations as `Move`
-  subclasses and lifecycle entry points.
-- `tests/` — unit and integration tests; mirror the shape of `src/`.
-- `spec/` — requirements, behavior choreography artifacts, and domain knowledge.
-- `docs/` — MkDocs source for the published documentation site.
+- `reachy_mini_app/main.py` — `ReachyMiniApp` subclass; entry point in the
+  `reachy_mini_apps` group. Behavior logic lives inside `run(self, reachy_mini, stop_event)`.
+- `reachy_mini_app/static/` — optional web UI for the FastAPI settings app
+  exposed at `custom_app_url`.
+- `index.html` + `style.css` — Hugging Face Space landing page.
+- `tests/` — pytest; smoke test runs against `ReachyMini(spawn_daemon=True, use_sim=True)`.
+- `spec/` — local specifications and choreography artifacts.
 
-## Command entry points
-
-All reproducible commands run through Taskfile so local and CI behavior stay
-identical:
-
-- `task lint` — Ruff lint and format check.
-- `task test` — pytest run.
-- `task docs` — MkDocs build.
-
-## Conventions
-
-- Source code, comments, identifiers, commit messages, and PR descriptions are
-  in English.
-- Reachy Mini behaviors follow the Pollen Robotics behavior layout: manifest,
-  behavior module with lifecycle hooks, test stub, docs stub.
-- Use the `claude-reachy-mini:behavior-scaffold` skill to add a new behavior;
-  do not hand-roll the folder shape.
-- Use the `claude-reachy-mini:reachy-mini-sdk` skill for guidance on SDK idioms
-  (`ReachyMini`, `goto_target`, `play_move`, `Move` subclasses, `mini.imu`,
-  `mini.media`, …).
-
-## What lives where
+## Plugin skills and agents
 
 | Concern | Skill / Agent |
 |---|---|
-| New behavior skeleton | `claude-reachy-mini:behavior-scaffold` |
-| SDK idioms | `claude-reachy-mini:reachy-mini-sdk` |
-| Dance choreography artifact | `claude-reachy-mini:dance-choreography` |
-| On-device test run | `claude-reachy-mini:reachy-mini-on-device` |
-| Home Assistant bridge | `claude-reachy-mini:home-assistant-bridge` |
+| New app skeleton | [`claude-reachy-mini:app-scaffold`](https://github.com/nolte/claude-reachy-mini/blob/develop/skills/app-scaffold/SKILL.md) |
+| SDK idioms (`ReachyMini`, `goto_target`, `play_move`, `Move`, `mini.imu`, `mini.media`) | [`claude-reachy-mini:reachy-mini-sdk`](https://github.com/nolte/claude-reachy-mini/blob/develop/skills/reachy-mini-sdk/SKILL.md) |
+| Dance choreography artifact | [`claude-reachy-mini:dance-choreography`](https://github.com/nolte/claude-reachy-mini/blob/develop/skills/dance-choreography/SKILL.md) |
+| Live test on real Reachy Mini | [`claude-reachy-mini:reachy-mini-on-device`](https://github.com/nolte/claude-reachy-mini/blob/develop/agents/reachy-mini-on-device.md) |
+| Home Assistant integration | [`claude-reachy-mini:home-assistant-bridge`](https://github.com/nolte/claude-reachy-mini/blob/develop/skills/home-assistant-bridge/SKILL.md) |
+
+## User-approval gate (AGENTS.md convention)
+
+Before any behavior code is committed, fill out `plan.md` and obtain
+explicit human approval. The plan is the contract that traps approach drift
+early. The four required sections are: Understanding, Approach, Open
+questions, Approval gate.
+
+## Conventions
+
+- Source code, comments, identifiers, commit messages, and PR descriptions
+  are written in English.
+- Don't hand-roll the app folder shape — the upstream CLI owns
+  `pyproject.toml`, `main.py`, `README.md` frontmatter, `index.html`,
+  `style.css`, and the entry-point declaration.
+- Run `reachy-mini-app-assistant check .` after any structural change to
+  confirm the Pollen contract still holds.

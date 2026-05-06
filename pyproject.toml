@@ -1,47 +1,33 @@
 [build-system]
-requires = ["setuptools>=68", "setuptools-scm>=8"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
-[project]
-name = "reachy-mini-app"
-version = "0.0.1"
-description = "Reachy Mini behavior package built on the Pollen Robotics / Hugging Face reachy_mini SDK."
-readme = "README.md"
-license = { text = "Apache-2.0" }
-authors = [{ name = "reachy-mini-app contributors" }]
-requires-python = ">=3.10"
-classifiers = [
-    "Development Status :: 3 - Alpha",
-    "License :: OSI Approved :: Apache Software License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-]
-dependencies = []
 
-# Install sets live in `requirements.txt`, `requirements-dev.txt`, and
-# `docs/requirements.txt` instead of `[project.optional-dependencies]`,
-# per spec/project/project-structure: pyproject.toml carries distribution
-# metadata and tooling configuration only; requirements*.txt files own the
-# install sets.
+[project]
+name = "reachy_mini_app"
+version = "0.1.0"
+description = "Playground projekt"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "reachy-mini==1.7.1"
+]
+keywords = ["reachy-mini-app"]
 
 [project.urls]
-Homepage = "https://github.com/nolte/reachy-mini-app"
-Repository = "https://github.com/nolte/reachy-mini-app"
-Documentation = "https://nolte.github.io/reachy-mini-app/"
-Issues = "https://github.com/nolte/reachy-mini-app/issues"
+Plugin = "https://github.com/nolte/claude-reachy-mini"
+SDK = "https://github.com/pollen-robotics/reachy_mini"
+Specs = "https://github.com/nolte/claude-reachy-mini/tree/develop/spec/reachy-mini/"
+
+[project.entry-points."reachy_mini_apps"]
+reachy_mini_app = "reachy_mini_app.main:ReachyMiniApp"
+
+[tool.setuptools]
+package-dir = { "" = "." }
+include-package-data = true
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
 
-[tool.ruff]
-line-length = 100
-target-version = "py310"
-
-[tool.ruff.lint]
-select = ["E", "F", "W", "I", "B", "UP", "SIM"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
+[tool.setuptools.package-data]
+reachy_mini_app = ["**/*"] # Also include all non-.py files
