@@ -122,7 +122,7 @@ Filled out by the developer; reviewer answers or pushes back.
 |---|---|
 | Reviewer | nolte (`nolte07@gmail.com`) |
 | Approved on | 2026-05-06 |
-| Approved revision (commit SHA) | _filled after first commit_ |
+| Approved revision (commit SHA) | `9073ff4` |
 | Notes / scope adjustments | All six default answers in section 3 accepted as proposed: audio out, spin-look-around TBD acceptable for v1, Bella Ciao BPM estimate acceptable for v1, two FastAPI POST endpoints + `/stop`, `waiting-idle` between choreographies, HF publish stays off. |
 
 **Until this section is filled and signed, do not commit any behavior
