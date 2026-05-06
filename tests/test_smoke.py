@@ -22,12 +22,25 @@ import time
 import numpy as np
 import pytest
 
-# Skip the entire module when GStreamer is missing — the reachy_mini
-# simulation refuses to spawn without it.
-gstreamer_missing = importlib.util.find_spec("gi") is None
-pytestmark = pytest.mark.skipif(
-    gstreamer_missing,
-    reason="GStreamer (python3-gi) not installed; sim cannot start.",
+# Skip the entire module when the GStreamer surface required by the
+# reachy_mini simulation is not fully installed. `gi` alone is not enough —
+# the sim also pulls in GstApp at spawn time, which depends on system
+# packages like gir1.2-gst-plugins-base-1.0.
+def _gstreamer_sim_ready() -> bool:
+    if importlib.util.find_spec("gi") is None:
+        return False
+    try:
+        import gi  # noqa: F401
+
+        gi.require_version("GstApp", "1.0")
+    except (ValueError, ImportError):
+        return False
+    return True
+
+
+requires_sim = pytest.mark.skipif(
+    not _gstreamer_sim_ready(),
+    reason="GStreamer simulation surface missing (need GstApp 1.0).",
 )
 
 
@@ -38,6 +51,7 @@ def test_app_module_imports() -> None:
     assert hasattr(app_main, "ReachyMiniApp")
 
 
+@requires_sim
 def test_reachy_mini_sim_set_target_tick() -> None:
     """A single set_target tick on the simulation must succeed."""
     from reachy_mini import ReachyMini
@@ -57,6 +71,7 @@ def test_reachy_mini_sim_set_target_tick() -> None:
             close()
 
 
+@requires_sim
 def test_run_loop_respects_stop_event() -> None:
     """The Pollen lifecycle contract: run() exits when stop_event is set."""
     from reachy_mini import ReachyMini

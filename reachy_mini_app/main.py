@@ -1,70 +1,73 @@
 import threading
+
 from reachy_mini import ReachyMini, ReachyMiniApp
-from reachy_mini.utils import create_head_pose
-import numpy as np
-import time
-from pydantic import BaseModel
+
+from . import blocks, choreographies
+
+
+class _AnyEvent:
+    """Compose two threading.Events; is_set() is the OR of both."""
+
+    def __init__(self, *events: threading.Event) -> None:
+        self._events = events
+
+    def is_set(self) -> bool:
+        return any(e.is_set() for e in self._events)
 
 
 class ReachyMiniApp(ReachyMiniApp):
-    # Optional: URL to a custom configuration page for the app
-    # eg. "http://localhost:8042"
     custom_app_url: str | None = "http://0.0.0.0:8042"
-    # Optional: specify a media backend ("gstreamer", "gstreamer_no_video", "default", etc.)
-    # On the wireless, use gstreamer_no_video to optimise CPU usage if the app does not use video streaming
     request_media_backend: str | None = None
 
-    def run(self, reachy_mini: ReachyMini, stop_event: threading.Event):
-        t0 = time.time()
+    def run(self, reachy_mini: ReachyMini, stop_event: threading.Event) -> None:
+        state: dict[str, str | None] = {"queued": None, "running": None}
+        cancel = threading.Event()
+        lock = threading.Lock()
 
-        antennas_enabled = True
-        sound_play_requested = False
+        def _request(name: str | None) -> None:
+            with lock:
+                state["queued"] = name
+                cancel.set()
 
-        # You can ignore this part if you don't want to add settings to your app. If you set custom_app_url to None, you have to remove this part as well.
-        # === vvv ===
-        class AntennaState(BaseModel):
-            enabled: bool
+        @self.settings_app.post("/play/drop-it-like-its-hot")
+        def play_drop():
+            _request("drop-it-like-its-hot")
+            return {"queued": "drop-it-like-its-hot"}
 
-        @self.settings_app.post("/antennas")
-        def update_antennas_state(state: AntennaState):
-            nonlocal antennas_enabled
-            antennas_enabled = state.enabled
-            return {"antennas_enabled": antennas_enabled}
+        @self.settings_app.post("/play/resistenza-bella-ciao")
+        def play_resistenza():
+            _request("resistenza-bella-ciao")
+            return {"queued": "resistenza-bella-ciao"}
 
-        @self.settings_app.post("/play_sound")
-        def request_sound_play():
-            nonlocal sound_play_requested
-            sound_play_requested = True
+        @self.settings_app.post("/stop")
+        def stop_choreography():
+            _request(None)
+            return {"stopped": True}
 
-        # === ^^^ ===
+        @self.settings_app.get("/status")
+        def status():
+            with lock:
+                return {"running": state["running"], "queued": state["queued"]}
 
-        # Main control loop
         while not stop_event.is_set():
-            t = time.time() - t0
+            with lock:
+                req = state["queued"]
+                state["queued"] = None
+                state["running"] = req if req is not None else "waiting-idle"
+                cancel.clear()
 
-            yaw_deg = 30.0 * np.sin(2.0 * np.pi * 0.2 * t)
-            head_pose = create_head_pose(yaw=yaw_deg, degrees=True)
+            local_stop = _AnyEvent(stop_event, cancel)
 
-            if antennas_enabled:
-                amp_deg = 25.0
-                a = amp_deg * np.sin(2.0 * np.pi * 0.5 * t)
-                antennas_deg = np.array([a, -a])
-            else:
-                antennas_deg = np.array([0.0, 0.0])
-
-            if sound_play_requested:
-                print("Playing sound...")
-                reachy_mini.media.play_sound("wake_up.wav")
-                sound_play_requested = False
-
-            antennas_rad = np.deg2rad(antennas_deg)
-
-            reachy_mini.set_target(
-                head=head_pose,
-                antennas=antennas_rad,
-            )
-
-            time.sleep(0.02)
+            try:
+                if req == "drop-it-like-its-hot":
+                    choreographies.drop_it_like_its_hot(reachy_mini, local_stop)
+                elif req == "resistenza-bella-ciao":
+                    choreographies.resistenza_bella_ciao(reachy_mini, local_stop)
+                else:
+                    blocks.waiting_idle(reachy_mini, local_stop, duration_s=None)
+            finally:
+                with lock:
+                    state["running"] = None
 
 
 if __name__ == "__main__":
