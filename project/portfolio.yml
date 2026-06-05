@@ -1,0 +1,17 @@
+# Portfolio manifest for nolte/reachy-mini-app.
+# Schema: spec/portfolio/portfolio-management/ §Capability inventory per repository
+# Audience references resolve against AUDIENCES.md at the repo root.
+
+capabilities:
+  - name: reachy-mini-behavior-app
+    description: >-
+      A Reachy Mini behavior package built on the Pollen Robotics / Hugging Face
+      reachy_mini SDK — packaging robot behaviours (for example dance-to-music)
+      that run on the Reachy Mini and distributed as a Hugging Face app.
+    audience:
+      - "Reachy Mini owner / maker"
+    status: experimental
+    rationale: >-
+      This repository owns the application-level Reachy Mini behaviours in the
+      portfolio, built on the upstream reachy_mini SDK; kept experimental while
+      it remains a playground project.
