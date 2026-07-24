@@ -15,3 +15,6 @@ capabilities:
       This repository owns the application-level Reachy Mini behaviours in the
       portfolio, built on the upstream reachy_mini SDK; kept experimental while
       it remains a playground project.
+
+    peers:
+      - "reachy-mini-mcp:reachy-mini-mcp-server"
