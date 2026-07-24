@@ -18,3 +18,39 @@ capabilities:
 
     peers:
       - "reachy-mini-mcp:reachy-mini-mcp-server"
+
+# tech_stack: repo-specific deltas vs the inherited portfolio baseline
+# (portfolio/tech-stack.yml). Schema: spec/portfolio/tech-stack/ §Per-repository block.
+tech_stack:
+  additions:
+    - name: python
+      kind: language
+      group: build-tooling
+      version: ">=3.10"
+      role: Implementation language for the Reachy Mini behavior package.
+      status: active
+      lifecycle: all
+      source_of_truth: pyproject.toml
+      rationale: >-
+        acknowledged-missing-signal: python is the app's runtime language; the closed group
+        enum has no application-runtime bucket, so it is grouped under build-tooling as the
+        closest fit (operator may regroup).
+    - name: reachy-mini
+      kind: framework
+      group: build-tooling
+      version: "==1.7.1"
+      role: Pollen Robotics / Hugging Face reachy_mini SDK the behavior app is built on.
+      status: active
+      lifecycle: runtime
+      source_of_truth: pyproject.toml
+    - name: huggingface-hub
+      kind: deploy-target
+      group: automation
+      role: Distribution channel; the behavior package ships as a Hugging Face reachy_mini app.
+      status: experimental
+      lifecycle: runtime
+      source_of_truth: pyproject.toml
+      rationale: >-
+        acknowledged-missing-signal: Hugging Face app distribution is declared via the
+        reachy_mini_apps entry-point and the capability manifest, but there is no dedicated HF
+        config file, so kind deploy-target is operator-curated here.
