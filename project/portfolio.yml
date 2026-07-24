@@ -16,6 +16,9 @@ capabilities:
       portfolio, built on the upstream reachy_mini SDK; kept experimental while
       it remains a playground project.
 
+    peers:
+      - "reachy-mini-mcp:reachy-mini-mcp-server"
+
 # tech_stack: repo-specific deltas vs the inherited portfolio baseline
 # (portfolio/tech-stack.yml). Schema: spec/portfolio/tech-stack/ §Per-repository block.
 tech_stack:
